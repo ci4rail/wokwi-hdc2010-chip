@@ -1,13 +1,15 @@
 {
   "version": 1,
-  "name": "Inverter",
-  "author": "Uri Shaked",
+  "name": "HDC2010",
+  "author": "popples",
   "license": "MIT",
-  "docs": "https://github.com/wokwi/inverter-chip/blob/main/docs/README.md",
+  "docs": "https://github.com/ci4rail/wokwi-hdc2010-chip/docs/README.md",
   "pins": [
-    "OUT",
-    "IN",
     "VCC",
-    "GND"
+    "ADDR",
+    "GND",
+    "SDA",
+    "SCL",
+    "DRDY"
   ]
 }
