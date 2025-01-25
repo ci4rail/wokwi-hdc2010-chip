@@ -1,6 +1,6 @@
-# Wokwi Inverter Chip Example
+# Wokwi HDC2010 Chip
 
-This is a basic custom chip for [Wokwi](https://wokwi.com/). It implements a simple inverter: the output is always opposite to the input.
+Simulates support for the HDC2010 chip.
 
 ## Pin names
 
@@ -17,7 +17,7 @@ To use this chip in your project, include it as a dependency in your `diagram.js
 
 ```json
   "dependencies": {
-    "chip-inverter": "github:wokwi/inverter-chip@1.0.0"
+    "chip-hdc2010": "github:ci4rail/wokwi-hdc2010-chip@1.0.0"
   }
 ```
 
@@ -26,8 +26,8 @@ Then, add the chip to your circuit by adding a `chip-inverter` item to the `part
 ```json
   "parts": {
     ...,
-    { "type": "chip-inverter", "id": "chip1" }
+    { "type": "chip-hdc2010", "id": "chip1" }
   },
 ```
 
-For a complete example, see [the inverter chip test project](https://wokwi.com/projects/350946636543820370).
+

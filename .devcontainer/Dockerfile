@@ -1,7 +1,7 @@
 FROM wokwi/builder-clang-wasm
 
 USER root
-RUN apk add gcompat libc6-compat
+RUN apk add bash gcompat libc6-compat
 
 # Install arduino-cli:
 RUN  wget -O /tmp/cli.tar.gz \
