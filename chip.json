@@ -11,5 +11,21 @@
     "SDA",
     "SCL",
     "DRDY"
+  ],
+  "controls": [
+    {
+      "id": "temperature",
+      "label": "temperature (°C)",
+      "type": "range",
+      "min": -50,
+      "max": 150
+    },
+    {
+      "id": "humidity",
+      "label": "humidity (%)",
+      "type": "range",
+      "min": 0,
+      "max": 100
+    }
   ]
 }

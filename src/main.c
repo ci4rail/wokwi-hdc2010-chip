@@ -25,6 +25,8 @@ typedef struct {
   pin_t pin_drdy;
   uint8_t address_register;
   uint8_t regs[REG_SIZE];
+  uint32_t temp_attr;
+  uint32_t hum_attr;
 } chip_state_t;
 
 
@@ -53,6 +55,9 @@ void chip_init(void) {
   chip->pin_drdy = pin_init("DRDY", OUTPUT);
   uint8_t address = get_addr(chip);
 
+  chip->temp_attr = attr_init_float("temperature", 25.0);
+  chip->hum_attr = attr_init_float("humidity", 50.0);
+
   chip->address_register = 0;
   memset(chip->regs, 0, REG_SIZE);
   chip->regs[0xfc] = 0x49;
@@ -78,12 +83,14 @@ void chip_init(void) {
 }
 
 bool on_i2c_connect(void *user_data, uint32_t address, bool connect) {
+  printf("I2C %s at address %x\n", connect ? "connect" : "disconnect", address);
   return true; /* Ack */
 }
 
 uint8_t on_i2c_read(void *user_data) {
   chip_state_t *chip = user_data;
   uint8_t data = chip->regs[chip->address_register];
+  printf("Reading from register %x: %x\n", chip->address_register, data);
   chip->address_register = (chip->address_register + 1) & 0xff;
   return data;
 }
@@ -93,6 +100,7 @@ bool on_i2c_write(void *user_data, uint8_t data) {
   switch(chip->state)
   {
     case IDLE:
+      printf("Writing to address register: %x\n", data);
       chip->address_register = data;
       chip->state = DATA;
     break;
