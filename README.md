@@ -1,6 +1,6 @@
-# Inverter Chip example
+# HDC2010 Chip Model for Wokwi
 
-Example of a basic custom chip for [Wokwi](https://wokwi.com/).
+See more details in [docs/README.md](docs/README.md).
 
 The actual source code for the chip lives in [src/main.c](src/main.c), and the pins are described in [chip.json](chip.json).
 

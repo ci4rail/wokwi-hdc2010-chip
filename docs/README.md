@@ -1,6 +1,6 @@
 # Wokwi HDC2010 Chip
 
-Simulatesa a HDC2010 temperature/humdity sensor chip.
+Simulates a HDC2010 temperature/humdity sensor chip.
 
 Currently supports: 
 * Reading temperature and humidity values in manual measurement mode
