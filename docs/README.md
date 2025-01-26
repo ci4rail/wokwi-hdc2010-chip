@@ -1,15 +1,28 @@
 # Wokwi HDC2010 Chip
 
-Simulates support for the HDC2010 chip.
+Simulatesa a HDC2010 temperature/humdity sensor chip.
+
+Currently supports: 
+* Reading temperature and humidity values in manual measurement mode
+* Manufacturer ID and Device ID registers
+* DRDY signal in high active mode
+
+Not supported
+* Automatic measurement mode
+* Interrupts
+- Threshold and Offset registers
+
 
 ## Pin names
 
 | Name | Description              |
 | ---- | ------------------------ |
-| IN   | Input signal             |
-| OUT  | Output (inverted) signal |
-| GND  | Ground                   |
-| VCC  | Supply voltage           |
+| VCC  | Supply voltage  - doesn't need to be connected |
+| ADDR   | Address Input - leave open for 0 |
+| GND  | Ground - doesn't need to be connected |
+| SDA  | I2C SDA |
+| SCL  | I2C SCL |
+| DRDY | Data Ready - goes high when data is ready to be read |
 
 ## Usage
 
@@ -21,7 +34,7 @@ To use this chip in your project, include it as a dependency in your `diagram.js
   }
 ```
 
-Then, add the chip to your circuit by adding a `chip-inverter` item to the `parts` section of diagram.json:
+Then, add the chip to your circuit by adding a `chip-hdc2010` item to the `parts` section of diagram.json:
 
 ```json
   "parts": {
