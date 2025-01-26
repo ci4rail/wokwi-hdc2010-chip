@@ -10,8 +10,7 @@
       "top": -200.58,
       "left": 91.2,
       "attrs": { "color": "#00ff00" }
-    },
-    { "type": "wokwi-led", "id": "led1", "top": -128.4, "left": 3.8, "attrs": { "color": "red" } }
+    }
   ],
   "connections": [
     [ "uno:GND.1", "chip1:C1", "black", [ "v0" ] ],

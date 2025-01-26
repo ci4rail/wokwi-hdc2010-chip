@@ -64,11 +64,12 @@ void loop()
   for (;;){
     hdc_write_byte(HDC_I2C_ADDRESS, 0x0f, 0x1); // start measurement
     delay(500);
-    byte data_lsb = hdc_read_byte(HDC_I2C_ADDRESS, 0x0); // read temperature
-    byte data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x1); // read temperature
-    float temp = ((data_msb << 8) | data_lsb) / (165 * 65536) - 40;
+    uint8_t data_lsb = hdc_read_byte(HDC_I2C_ADDRESS, 0x0); // read temperature
+    uint8_t data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x1); // read temperature
+    uint16_t raw = (data_msb << 8) | data_lsb;
+    uint32_t temp = ((uint32_t(raw)*100UL) * 165 / 0x10000UL) - 4000UL;
 
-    sprintf(buffer, "Temperature: %f %04x\n", temp, (data_msb << 8) | data_lsb);
+    sprintf(buffer, "Temperature: %ld /100 °C raw=%04x\n", temp, raw);
     Serial.println(buffer);
 
   }

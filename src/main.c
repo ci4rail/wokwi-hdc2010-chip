@@ -67,6 +67,7 @@ static void on_meas_timer(void *user_data) {
   chip->regs[0x1] = temp_raw >> 8;
   chip->regs[0x2] = hum_raw & 0xff;
   chip->regs[0x3] = hum_raw >> 8;
+  chip->regs[0x0f] &= ~0x1; // Clear the measurement bit
   pin_write(chip->pin_drdy, 1);
 }
 
