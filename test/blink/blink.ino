@@ -50,9 +50,9 @@ void setup()
 
   byte data = hdc_read_byte(HDC_I2C_ADDRESS, 0xfe);
   if(data == 0xd0) {
-    Serial.println("Works");
+    Serial.println("Device ID is correct");
   } else {
-    sprintf(buffer, "Doesn't work: %x", data);
+    sprintf(buffer, "Device ID wrong: %x", data);
     Serial.println(buffer);
   }
 }
@@ -64,13 +64,21 @@ void loop()
   for (;;){
     hdc_write_byte(HDC_I2C_ADDRESS, 0x0f, 0x1); // start measurement
     delay(500);
+
     uint8_t data_lsb = hdc_read_byte(HDC_I2C_ADDRESS, 0x0); // read temperature
-    uint8_t data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x1); // read temperature
+    uint8_t data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x1); 
     uint16_t raw = (data_msb << 8) | data_lsb;
     uint32_t temp = ((uint32_t(raw)*100UL) * 165 / 0x10000UL) - 4000UL;
 
-    sprintf(buffer, "Temperature: %ld /100 °C raw=%04x\n", temp, raw);
+    sprintf(buffer, "Temperature: %ld /100 C raw=%04x", temp, raw);
     Serial.println(buffer);
 
+    data_lsb = hdc_read_byte(HDC_I2C_ADDRESS, 0x2); // read humidity
+    data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x3); 
+    raw = (data_msb << 8) | data_lsb;
+    uint32_t hum = ((uint32_t(raw)*100UL) * 100 / 0x10000UL);
+
+    sprintf(buffer, "Humidity: %ld /100 %% raw=%04x", hum, raw);
+    Serial.println(buffer);
   }
 }
