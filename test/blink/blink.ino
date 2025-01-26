@@ -15,7 +15,7 @@ void wait_for_device(uint8_t i2c_device_address) {
 
 void hdc_write_byte(uint8_t i2c_device_address, uint8_t address, uint8_t data) {
   Wire.beginTransmission(i2c_device_address);
-  Wire.write(address >> 8); 
+  Wire.write(address); 
   Wire.write(data);
   Wire.endTransmission();
   wait_for_device(i2c_device_address);
@@ -36,7 +36,7 @@ byte hdc_read_byte(uint8_t i2c_device_address, uint8_t address) {
 
 void setup()
 {
-  char buffer[20];
+  char buffer[80];
   Wire.begin();
 
   Serial.begin(9600);
@@ -59,5 +59,17 @@ void setup()
 
 void loop()
 {
+  char buffer[80];
+  
+  for (;;){
+    hdc_write_byte(HDC_I2C_ADDRESS, 0x0f, 0x1); // start measurement
+    delay(500);
+    byte data_lsb = hdc_read_byte(HDC_I2C_ADDRESS, 0x0); // read temperature
+    byte data_msb = hdc_read_byte(HDC_I2C_ADDRESS, 0x1); // read temperature
+    float temp = ((data_msb << 8) | data_lsb) / (165 * 65536) - 40;
 
+    sprintf(buffer, "Temperature: %f %04x\n", temp, (data_msb << 8) | data_lsb);
+    Serial.println(buffer);
+
+  }
 }

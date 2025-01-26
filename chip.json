@@ -17,8 +17,8 @@
       "id": "temperature",
       "label": "temperature (°C)",
       "type": "range",
-      "min": -50,
-      "max": 150
+      "min": -40,
+      "max": 123
     },
     {
       "id": "humidity",

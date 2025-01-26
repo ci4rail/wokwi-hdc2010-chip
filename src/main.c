@@ -15,7 +15,6 @@ const int BASE_ADDRESS = 0x40;
 
 typedef enum {
   IDLE,
-  ADDRESS_1,
   DATA
 } chip_i2c_state_t;
 
@@ -27,6 +26,7 @@ typedef struct {
   uint8_t regs[REG_SIZE];
   uint32_t temp_attr;
   uint32_t hum_attr;
+  timer_t meas_timer;
 } chip_state_t;
 
 
@@ -48,6 +48,35 @@ static bool is_readonly(uint8_t address) {
   }
   return true;
 }
+static uint16_t temp2raw(float temp) {
+  return (uint16_t)((temp + 40) * 65536 / 165);
+}
+
+static uint16_t hum2raw(float hum) {
+  return (uint16_t)(hum * 65536 / 100);
+}
+
+static void on_meas_timer(void *user_data) {
+  chip_state_t *chip = user_data;
+  float temp = attr_read_float(chip->temp_attr);
+  float hum = attr_read_float(chip->hum_attr);
+  printf("Measuring: temp=%f, hum=%f\n", temp, hum);
+  uint16_t temp_raw = temp2raw(temp);
+  uint16_t hum_raw = hum2raw(hum);
+  chip->regs[0x0] = temp_raw & 0xff;
+  chip->regs[0x1] = temp_raw >> 8;
+  chip->regs[0x2] = hum_raw & 0xff;
+  chip->regs[0x3] = hum_raw >> 8;
+  pin_write(chip->pin_drdy, 1);
+}
+
+static void write_meas_reg(chip_state_t *chip, uint8_t data) {
+  if (data & 0x1) {
+    printf("Starting measurement\n");
+    timer_start(chip->meas_timer, 660, false);
+    pin_write(chip->pin_drdy, 0);
+  } 
+}
 
 void chip_init(void) {
   chip_state_t *chip = malloc(sizeof(chip_state_t));
@@ -57,6 +86,10 @@ void chip_init(void) {
 
   chip->temp_attr = attr_init_float("temperature", 25.0);
   chip->hum_attr = attr_init_float("humidity", 50.0);
+  chip->meas_timer = timer_init(&(timer_config_t){
+    .user_data = chip,
+    .callback = on_meas_timer,
+  });
 
   chip->address_register = 0;
   memset(chip->regs, 0, REG_SIZE);
@@ -79,7 +112,7 @@ void chip_init(void) {
   i2c_init(&i2c_config);
 
   // The following message will appear in the browser's DevTools console:
-  printf("Hello from HDC2010 at address %x \n", address);
+  printf("Hello from HDC2010 at address %x\n", address);
 }
 
 bool on_i2c_connect(void *user_data, uint32_t address, bool connect) {
@@ -110,6 +143,12 @@ bool on_i2c_write(void *user_data, uint8_t data) {
       }
       printf("Writing to register %x: %x\n", chip->address_register, data);
       chip->regs[chip->address_register] = data;
+
+      switch(chip->address_register){
+        case 0x0f:
+          write_meas_reg(chip, data);
+        break;
+      }      
       chip->address_register = (chip->address_register + 1) & 0xff;
     break;
     default:
