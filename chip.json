@@ -1,6 +1,5 @@
 {
-  "version": 1,
-  "name": "HDC2010",
+  "name": "hdc2010",
   "author": "popples",
   "license": "MIT",
   "docs": "https://github.com/ci4rail/wokwi-hdc2010-chip/docs/README.md",
